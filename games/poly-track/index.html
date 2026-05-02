@@ -1,26 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Polytrack Launcher</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background-color: #000;
-      overflow: hidden;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-  </style>
-</head>
-<body>
-  <iframe src="https://classroomlesson.github.io/basic-ruffle-player/html/polytrack/index.html" allowfullscreen></iframe>
-</body>
+
+<html>
+  <head>
+    <title>Ducky</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
+    />
+  </head>
+  <body>
+    <canvas id="screen"></canvas>
+    <div id="ui"></div>
+    <div id="transition-layer"></div>
+
+    <script type="module" src="main.bundle.js" defer></script>
+  </body>
 </html>
