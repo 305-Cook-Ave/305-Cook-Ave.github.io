@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EduSphere Student Dashboard — Interactive learning modules and virtual simulations.">
+  <title>Student Dashboard | EduSphere Academy</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-page">
+  <div class="dashboard-layout">
+    <aside class="dashboard-sidebar" aria-label="Student navigation">
+      <a href="index.html" class="brand brand--compact">
+        <span class="brand-mark" aria-hidden="true">ES</span>
+        <span class="brand-text">EduSphere</span>
+      </a>
+
+      <div class="student-profile">
+        <div class="avatar" aria-hidden="true">AJ</div>
+        <div>
+          <p class="student-name">Alex Johnson</p>
+          <p class="student-id">ID: ES-2026-8842</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-icon" aria-hidden="true">📖</span>
+          My Courses
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-icon" aria-hidden="true">📊</span>
+          Grades
+        </a>
+        <a href="#modules" class="sidebar-link sidebar-link--active">
+          <span class="sidebar-icon" aria-hidden="true">🧪</span>
+          Interactive Lab Simulations
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-icon" aria-hidden="true">📅</span>
+          Schedule
+        </a>
+        <a href="#" class="sidebar-link">
+          <span class="sidebar-icon" aria-hidden="true">💬</span>
+          Messages
+        </a>
+      </nav>
+
+      <a href="index.html" class="sidebar-signout">Sign Out</a>
+    </aside>
+
+    <div class="dashboard-main">
+      <header class="dashboard-header">
+        <div>
+          <p class="eyebrow">Spring 2026 · PHYS 210</p>
+          <h1>Student Learning Portal</h1>
+        </div>
+        <div class="header-meta">
+          <span class="status-badge">Enrolled</span>
+          <span class="header-date">Wednesday, May 27, 2026</span>
+        </div>
+      </header>
+
+      <section class="dashboard-welcome">
+        <p>Welcome back, Alex. Your assigned virtual labs are ready. Select a module below to launch an interactive simulation in a secure fullscreen session.</p>
+      </section>
+
+      <section id="modules" class="modules-section">
+        <header class="modules-header">
+          <div>
+            <h2>Interactive Learning Modules</h2>
+            <p class="section-lead">Virtual Simulations · Browser-Based Labs</p>
+          </div>
+        </header>
+
+        <!-- Cards are injected here by script.js from GAME_MODULES config -->
+        <div id="module-grid" class="module-grid" role="list" aria-label="Interactive learning modules"></div>
+      </section>
+
+      <footer class="dashboard-footer">
+        <p>Need help? Contact lab support at <a href="mailto:labsupport@edusphere.edu">labsupport@edusphere.edu</a></p>
+      </footer>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
