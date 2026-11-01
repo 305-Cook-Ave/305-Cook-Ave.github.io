@@ -24,9 +24,136 @@
             background: linear-gradient(135deg, #0f172a, #172554, #312e81);
             color: white;
             padding: 24px;
+            overflow: hidden;
         }
 
+        /* ENVELOPE SCREEN */
+
+        .envelope-screen {
+            text-align: center;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .envelope-screen.hide {
+            opacity: 0;
+            transform: scale(0.7);
+            pointer-events: none;
+        }
+
+        .envelope {
+            position: relative;
+            width: 180px;
+            height: 125px;
+            margin: 0 auto 35px;
+            cursor: pointer;
+            animation: float 2.5s ease-in-out infinite;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .envelope:hover {
+            transform: scale(1.1);
+        }
+
+        .envelope-body {
+            position: absolute;
+            inset: 0;
+            background: #e0e7ff;
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .envelope-body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, #c7d2fe, #818cf8);
+            clip-path: polygon(0 0, 50% 65%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65%;
+            background: #a5b4fc;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top;
+            transition: transform 0.7s ease;
+            z-index: 3;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .letter {
+            position: absolute;
+            width: 145px;
+            height: 100px;
+            background: white;
+            border-radius: 5px;
+            top: 10px;
+            left: 17px;
+            z-index: 1;
+            transition: transform 0.8s ease;
+        }
+
+        .envelope.open .letter {
+            transform: translateY(-85px);
+        }
+
+        .seal {
+            position: absolute;
+            z-index: 4;
+            top: 42px;
+            left: 72px;
+            width: 36px;
+            height: 36px;
+            background: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: opacity 0.3s ease;
+        }
+
+        .envelope.open .seal {
+            opacity: 0;
+        }
+
+        .envelope-text {
+            color: #c7d2fe;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            animation: pulse 2s infinite;
+        }
+
+        .envelope-subtext {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-18px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+
+        /* MESSAGE CARD */
+
         .card {
+            display: none;
             width: 100%;
             max-width: 550px;
             padding: 55px 40px;
@@ -36,7 +163,11 @@
             border-radius: 24px;
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(15px);
-            animation: appear 0.8s ease;
+        }
+
+        .card.show {
+            display: block;
+            animation: appear 0.8s ease forwards;
         }
 
         .icon {
@@ -110,11 +241,11 @@
         @keyframes appear {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -123,11 +254,49 @@
                 padding: 40px 24px;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-    <main class="card">
+    <!-- ENVELOPE INTRO -->
+
+    <div class="envelope-screen" id="envelopeScreen">
+
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+
+            <div class="letter"></div>
+
+            <div class="envelope-body"></div>
+
+            <div class="envelope-flap"></div>
+
+            <div class="seal">✉</div>
+
+        </div>
+
+        <div class="envelope-text">
+            You've got a message!
+        </div>
+
+        <div class="envelope-subtext">
+            Click the envelope to open it
+        </div>
+
+    </div>
+
+
+    <!-- MESSAGE -->
+
+    <main class="card" id="messageCard">
+
         <div class="icon">✉️</div>
 
         <div class="label">An Important Update</div>
@@ -137,7 +306,6 @@
         <p>
             We've moved! Our website has a new home.
             Please visit our new website using the link below.
-            305 Cook Ave is Vyom Bhosle's address btw not mine
         </p>
 
         <a class="button" href="https://calculatedbreak.github.io">
@@ -149,7 +317,36 @@
         <footer>
             Thank you for visiting!
         </footer>
+
     </main>
+
+
+    <script>
+        let opened = false;
+
+        function openEnvelope() {
+            if (opened) return;
+            opened = true;
+
+            const envelope = document.getElementById("envelope");
+            const screen = document.getElementById("envelopeScreen");
+            const card = document.getElementById("messageCard");
+
+            // Open the envelope
+            envelope.classList.add("open");
+
+            // Wait for the opening animation
+            setTimeout(() => {
+                screen.classList.add("hide");
+            }, 700);
+
+            // Show the message
+            setTimeout(() => {
+                screen.style.display = "none";
+                card.classList.add("show");
+            }, 1250);
+        }
+    </script>
 
 </body>
 </html>
