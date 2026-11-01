@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +26,9 @@
             overflow: hidden;
         }
 
-        /* ENVELOPE SCREEN */
+        /* =========================
+           ENVELOPE INTRO
+        ========================= */
 
         .envelope-screen {
             text-align: center;
@@ -44,71 +45,97 @@
             position: relative;
             width: 180px;
             height: 125px;
-            margin: 0 auto 35px;
+            margin: 90px auto 35px; /* top space so the letter has room to slide up */
             cursor: pointer;
             animation: float 2.5s ease-in-out infinite;
             filter: drop-shadow(0 15px 25px rgba(0,0,0,0.3));
-            transition: transform 0.3s ease;
+            perspective: 800px;
         }
 
         .envelope:hover {
-            transform: scale(1.1);
+            animation-play-state: paused;
         }
 
-        .envelope-body {
-            position: absolute;
-            inset: 0;
-            background: #e0e7ff;
+        .envelope:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 8px;
             border-radius: 8px;
-            overflow: hidden;
-            z-index: 2;
         }
 
-        .envelope-body::before {
-            content: "";
+        /* BACK OF ENVELOPE (z-index 1) */
+
+        .envelope-back {
             position: absolute;
             inset: 0;
-            background: linear-gradient(145deg, #c7d2fe, #818cf8);
-            clip-path: polygon(0 0, 50% 65%, 100% 0, 100% 100%, 0 100%);
+            background: #818cf8;
+            border-radius: 8px;
+            z-index: 1;
         }
+
+        /* LETTER: sits between back and front (z-index 2, never changes) */
+
+        .letter {
+            position: absolute;
+            width: 145px;
+            height: 100px;
+            background:
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent 0 14px,
+                    #e2e8f0 14px 16px
+                ),
+                #ffffff;
+            border-radius: 5px;
+            top: 10px;
+            left: 17px;
+            z-index: 2;
+            transition: transform 0.8s ease 0.3s;
+        }
+
+        /* FRONT POCKET: covers the bottom of the letter (z-index 3) */
+
+        .envelope-front {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #a5b4fc, #6366f1);
+            border-radius: 8px;
+            clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+            z-index: 3;
+        }
+
+        /* FLAP (z-index 4 closed; swaps behind the letter midway through the flip) */
 
         .envelope-flap {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 65%;
-            background: #a5b4fc;
+            height: 52%;
+            background: #c7d2fe;
             clip-path: polygon(0 0, 100% 0, 50% 100%);
-            transform-origin: top;
-            transition: transform 0.7s ease;
-            z-index: 3;
+            transform-origin: top center;
+            transform: rotateX(0deg);
+            transition: transform 0.7s ease, z-index 0s linear 0.35s;
+            z-index: 4;
         }
 
         .envelope.open .envelope-flap {
             transform: rotateX(180deg);
+            z-index: 1;
         }
 
-        .letter {
-            position: absolute;
-            width: 145px;
-            height: 100px;
-            background: white;
-            border-radius: 5px;
-            top: 10px;
-            left: 17px;
-            z-index: 1;
-            transition: transform 0.8s ease;
-        }
+        /* LETTER SLIDES OUT (after the flap has opened) */
 
         .envelope.open .letter {
             transform: translateY(-85px);
         }
 
+        /* SEAL (z-index 5, on top of everything) */
+
         .seal {
             position: absolute;
-            z-index: 4;
-            top: 42px;
+            z-index: 5;
+            top: 47px;
             left: 72px;
             width: 36px;
             height: 36px;
@@ -124,12 +151,15 @@
 
         .envelope.open .seal {
             opacity: 0;
+            pointer-events: none;
         }
+
+        /* TEXT UNDER ENVELOPE */
 
         .envelope-text {
             color: #c7d2fe;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.5px;
             animation: pulse 2s infinite;
         }
@@ -140,17 +170,9 @@
             margin-top: 10px;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-18px); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.55; }
-        }
-
-        /* MESSAGE CARD */
+        /* =========================
+           MESSAGE CARD
+        ========================= */
 
         .card {
             display: none;
@@ -238,16 +260,43 @@
             font-size: 12px;
         }
 
+        /* =========================
+           ANIMATIONS
+        ========================= */
+
+        @keyframes float {
+            0%, 100% {
+                translate: 0 0;
+            }
+
+            50% {
+                translate: 0 -18px;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.55;
+            }
+        }
+
         @keyframes appear {
             from {
                 opacity: 0;
                 transform: translateY(30px) scale(0.95);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
+
+        /* MOBILE */
 
         @media (max-width: 480px) {
             .card {
@@ -259,8 +308,10 @@
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
                 transition-duration: 0.01ms !important;
+                transition-delay: 0s !important;
             }
         }
+
     </style>
 </head>
 
@@ -270,14 +321,20 @@
 
     <div class="envelope-screen" id="envelopeScreen">
 
-        <div class="envelope" id="envelope" onclick="openEnvelope()">
+        <div
+            class="envelope"
+            id="envelope"
+            onclick="openEnvelope()"
+            role="button"
+            tabindex="0"
+            aria-label="Open your message"
+            onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openEnvelope(); }"
+        >
 
+            <div class="envelope-back"></div>
             <div class="letter"></div>
-
-            <div class="envelope-body"></div>
-
+            <div class="envelope-front"></div>
             <div class="envelope-flap"></div>
-
             <div class="seal">✉</div>
 
         </div>
@@ -293,7 +350,7 @@
     </div>
 
 
-    <!-- MESSAGE -->
+    <!-- MESSAGE CARD -->
 
     <main class="card" id="messageCard">
 
@@ -308,11 +365,16 @@
             Please visit our new website using the link below.
         </p>
 
-        <a class="button" href="https://calculatedbreak.github.io">
+        <a
+            class="button"
+            href="https://calculatedbreak.github.io"
+        >
             Visit Our New Website →
         </a>
 
-        <p class="url">calculatedbreak.github.io</p>
+        <p class="url">
+            calculatedbreak.github.io
+        </p>
 
         <footer>
             Thank you for visiting!
@@ -321,31 +383,38 @@
     </main>
 
 
+    <!-- JAVASCRIPT -->
+
     <script>
+
         let opened = false;
 
         function openEnvelope() {
+
             if (opened) return;
+
             opened = true;
 
             const envelope = document.getElementById("envelope");
             const screen = document.getElementById("envelopeScreen");
             const card = document.getElementById("messageCard");
 
-            // Open the envelope
+            // Open envelope flap, then letter slides out
             envelope.classList.add("open");
 
-            // Wait for the opening animation
+            // Fade out envelope screen
             setTimeout(() => {
                 screen.classList.add("hide");
-            }, 700);
+            }, 1400);
 
-            // Show the message
+            // Reveal message card
             setTimeout(() => {
                 screen.style.display = "none";
                 card.classList.add("show");
-            }, 1250);
+            }, 2000);
+
         }
+
     </script>
 
 </body>
